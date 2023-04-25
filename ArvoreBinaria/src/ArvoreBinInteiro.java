@@ -145,7 +145,7 @@ public class ArvoreBinInteiro {
         if (root.getData() != null) {
             NoArvoreBinaria<Integer> aux = root;
             altura1 = 1;
-            altura2 = 2;
+            altura2 = 1;
 
             do {
                 if (aux.getLeftChild() != null) {
