@@ -10,7 +10,6 @@ public class ArvoreBinInteiro {
             NoArvoreBinaria<Integer> novaFolha = new NoArvoreBinaria<>();
             novaFolha.setData(num);
 
-            boolean condition = true;
             do {
                 if (num > aux.getData()) {
                     if (aux.getRightChild() != null) {
@@ -18,7 +17,7 @@ public class ArvoreBinInteiro {
                     } else {
                         aux.setRightChild(novaFolha);
                         novaFolha.setNoPai(aux);
-                        condition = false;
+                        return;
                     }
                 } else {
                     if (aux.getLeftChild() != null) {
@@ -26,10 +25,10 @@ public class ArvoreBinInteiro {
                     } else {
                         aux.setLeftChild(novaFolha);
                         novaFolha.setNoPai(aux);
-                        condition = false;
+                        return;
                     }
                 }
-            } while (condition);
+            } while (true);
         }
     }
 
@@ -47,8 +46,37 @@ public class ArvoreBinInteiro {
             case 4:
                 listarPercursoEmNiveis(root, n[1]);
                 break;
+            case 5:
+                listarNumerosInternos(root);
+                break;
+            case 6:
+                listarFolhas(root);
+                break;
             default:
                 System.out.println("Inválido.");
+        }
+    }
+
+    public void listarNumerosInternos(NoArvoreBinaria<Integer> no) {
+        if (no != null) {
+            //Possui dois filhos
+            //if (no.getRightChild() != null && no.getLeftChild() != null) {
+            //Possui ao menos um filho
+            if (no.getRightChild() != null || no.getLeftChild() != null) {
+                System.out.print(no.getData() + " ");
+            }
+            listarNumerosInternos(no.getLeftChild());
+            listarNumerosInternos(no.getRightChild());
+        }
+    }
+
+    private void listarFolhas(NoArvoreBinaria<Integer> no) {
+        if (no != null) {
+            if (no.getRightChild() == null & no.getLeftChild() == null) {
+                System.out.print(no.getData() + " ");
+            }
+            listarFolhas(no.getLeftChild());
+            listarFolhas(no.getRightChild());
         }
     }
 
@@ -84,7 +112,7 @@ public class ArvoreBinInteiro {
         }
 
         if (no != null) {
-            System.out.println(no.getData());
+            System.out.print(no.getData() + " ");
 
             if (nivel > 1) {
                 listarPercursoEmNiveis(no.getLeftChild(), nivel - 1);
@@ -96,23 +124,52 @@ public class ArvoreBinInteiro {
         }
     }
 
-    public int retornaMaiorNumero() {
-        int maior = 0;
-        if (root.getData() != null) {
-            NoArvoreBinaria<Integer> aux = root;
-            maior = root.getData();
+    public void exibirCaminho(int num) {
+        if (root.getData() == null) {
+            return;
+        }
 
-            do {
+        NoArvoreBinaria<Integer> aux = root;
+
+        System.out.print(aux.getData() + " ");
+
+        while (aux.getData() != num) {
+            if (num > aux.getData()) {
                 if (aux.getRightChild() != null) {
                     aux = aux.getRightChild();
-                    if (aux.getData() > maior) {
-                        maior = aux.getData();
-                    }
                 } else {
-                    aux = null;
+                    return;
                 }
-            } while (aux != null);
+            } else {
+                if (aux.getLeftChild() != null) {
+                    aux = aux.getLeftChild();
+                } else {
+                    return;
+                }
+            }
+            System.out.print(aux.getData() + " ");
+
         }
+    }
+
+    public int retornaMaiorNumero() {
+        int maior = 0;
+        if (root.getData() == null) {
+            return maior;
+        }
+        NoArvoreBinaria<Integer> aux = root;
+        maior = root.getData();
+
+        do {
+            if (aux.getRightChild() != null) {
+                aux = aux.getRightChild();
+                if (aux.getData() > maior) {
+                    maior = aux.getData();
+                }
+            } else {
+                aux = null;
+            }
+        } while (aux != null);
 
         return maior;
     }
@@ -138,8 +195,7 @@ public class ArvoreBinInteiro {
         return menor;
     }
 
-    public int retornarAlturaArvore(){
-
+    public int retornarAlturaArvore() {
         int altura1 = 0, altura2 = 0;
 
         if (root.getData() != null) {
@@ -169,8 +225,14 @@ public class ArvoreBinInteiro {
 
         return Math.max(altura1, altura2);
     }
-    public NoArvoreBinaria retornaRaiz() {
-        return root;
+
+    public int retornaRaiz() {
+        if (root.getData() != null) {
+            return root.getData();
+        } else {
+            System.out.println("Árvore vazia.");
+            return 0;
+        }
     }
 
 }
