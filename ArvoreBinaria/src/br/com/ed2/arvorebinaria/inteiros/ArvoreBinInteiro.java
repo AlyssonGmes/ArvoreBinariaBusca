@@ -1,3 +1,5 @@
+package br.com.ed2.arvorebinaria.inteiros;
+
 public class ArvoreBinInteiro {
 
     NoArvoreBinaria<Integer> root = new NoArvoreBinaria<>();

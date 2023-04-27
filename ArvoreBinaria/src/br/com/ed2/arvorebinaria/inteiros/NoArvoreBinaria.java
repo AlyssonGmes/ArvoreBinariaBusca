@@ -1,3 +1,5 @@
+package br.com.ed2.arvorebinaria.inteiros;
+
 public class NoArvoreBinaria <T> {
     private T data;
     private NoArvoreBinaria leftChild;
