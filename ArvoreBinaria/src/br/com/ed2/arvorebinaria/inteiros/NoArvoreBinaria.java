@@ -2,9 +2,9 @@ package br.com.ed2.arvorebinaria.inteiros;
 
 public class NoArvoreBinaria <T> {
     private T data;
-    private NoArvoreBinaria leftChild;
-    private NoArvoreBinaria rightChild;
-    private NoArvoreBinaria noPai;
+    private NoArvoreBinaria<T> leftChild;
+    private NoArvoreBinaria<T> rightChild;
+    private NoArvoreBinaria<T> noPai;
 
     public T getData() {
         return data;

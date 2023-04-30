@@ -24,7 +24,6 @@ public class TesteArvoreBinInteiro {
             System.out.println("12. Retorna raiz");
             System.out.println("0. Sair");
 
-
             switch (scn.nextInt()) {
                 case 1:
                     System.out.print("Digite o número: ");

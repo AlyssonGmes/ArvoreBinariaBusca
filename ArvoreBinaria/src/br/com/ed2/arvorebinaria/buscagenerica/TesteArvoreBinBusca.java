@@ -1,7 +1,5 @@
 package br.com.ed2.arvorebinaria.buscagenerica;
 
-import br.com.ed2.arvorebinaria.inteiros.ArvoreBinInteiro;
-
 import java.util.Scanner;
 
 public class TesteArvoreBinBusca {

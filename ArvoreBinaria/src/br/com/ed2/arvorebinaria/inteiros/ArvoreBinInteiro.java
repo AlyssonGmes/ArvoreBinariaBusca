@@ -64,6 +64,7 @@ public class ArvoreBinInteiro {
             //Possui dois filhos
             //if (no.getRightChild() != null && no.getLeftChild() != null) {
             //Possui ao menos um filho
+
             if (no.getRightChild() != null || no.getLeftChild() != null) {
                 System.out.print(no.getData() + " ");
             }
@@ -225,7 +226,7 @@ public class ArvoreBinInteiro {
             } while (aux != null);
         }
 
-        return Math.max(altura1, altura2);
+        return Math.max(altura1, altura2)-1;
     }
 
     public int retornaRaiz() {
