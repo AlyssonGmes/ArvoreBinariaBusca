@@ -1,5 +1,7 @@
 package br.com.ed2.arvorebinaria.buscagenerica.interfaces;
 
-public interface ArvoreBinaria <E>{
+import br.com.ed2.arvorebinaria.buscagenerica.PosicaoArvoreBin;
+
+public interface ArvoreBinaria<E extends Comparable<E>> {
 
 }

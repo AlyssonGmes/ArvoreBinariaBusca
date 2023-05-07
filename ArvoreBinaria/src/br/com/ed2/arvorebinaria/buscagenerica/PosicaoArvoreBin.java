@@ -1,9 +1,12 @@
 package br.com.ed2.arvorebinaria.buscagenerica;
-public class PosicaoArvoreBin<T extends Comparable<T>> implements Posicao, Comparable<PosicaoArvoreBin<T>> {
+
+import br.com.ed2.arvorebinaria.buscagenerica.interfaces.Posicao;
+
+public class PosicaoArvoreBin<T extends Comparable<T>> implements Posicao {
     private T data;
     private PosicaoArvoreBin<T> leftChild;
     private PosicaoArvoreBin<T> rightChild;
-    private PosicaoArvoreBin<T> noPai;
+    private Posicao<T> father;
 
     public T getData() {
         return data;
@@ -29,16 +32,12 @@ public class PosicaoArvoreBin<T extends Comparable<T>> implements Posicao, Compa
         this.rightChild = rightChild;
     }
 
-    public PosicaoArvoreBin<T> getNoPai() {
-        return noPai;
-    }
-
-    public void setNoPai(PosicaoArvoreBin<T> noPai) {
-        this.noPai = noPai;
-    }
-
     @Override
-    public int compareTo(PosicaoArvoreBin<T> o) {
-        return this.data.compareTo(o.getData());
+    public Posicao<T> getFather() {
+        return father;
+    }
+
+    public void setFather(Posicao<T> father) {
+        this.father = father;
     }
 }
