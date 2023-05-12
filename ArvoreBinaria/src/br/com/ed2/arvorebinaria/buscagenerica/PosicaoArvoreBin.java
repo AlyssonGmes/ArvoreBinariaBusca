@@ -20,16 +20,9 @@ public class PosicaoArvoreBin<T extends Comparable<T>> implements Posicao {
         return leftChild;
     }
 
-    public void setLeftChild(PosicaoArvoreBin<T> leftChild) {
-        this.leftChild = leftChild;
-    }
 
     public PosicaoArvoreBin<T> getRightChild() {
         return rightChild;
-    }
-
-    public void setRightChild(PosicaoArvoreBin<T> rightChild) {
-        this.rightChild = rightChild;
     }
 
     @Override
@@ -39,5 +32,18 @@ public class PosicaoArvoreBin<T extends Comparable<T>> implements Posicao {
 
     public void setFather(Posicao<T> father) {
         this.father = father;
+    }
+
+    public void setLeftChild(PosicaoArvoreBin leftChild) {
+        this.leftChild = leftChild;
+    }
+
+    public void setRightChild(PosicaoArvoreBin rightChild) {
+        this.rightChild = rightChild;
+    }
+
+    @Override
+    public void setData(Object elemento) {
+        data = (T) elemento;
     }
 }

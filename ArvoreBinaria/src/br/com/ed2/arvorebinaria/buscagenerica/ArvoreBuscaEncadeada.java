@@ -3,9 +3,9 @@ package br.com.ed2.arvorebinaria.buscagenerica;
 import br.com.ed2.arvorebinaria.buscagenerica.exceptions.*;
 import br.com.ed2.arvorebinaria.buscagenerica.interfaces.ArvoreBinBusca;
 import br.com.ed2.arvorebinaria.buscagenerica.interfaces.Posicao;
-import br.com.ed2.arvorebinaria.inteiros.NoArvoreBinaria;
 
 import java.util.Iterator;
+import java.util.Scanner;
 
 //Classe que implementa a ‘interface’ ArvoreBinBusca para representar uma árvore binária de busca.
 public class ArvoreBuscaEncadeada<E extends Comparable<E>> implements ArvoreBinBusca<E> {
@@ -34,8 +34,35 @@ public class ArvoreBuscaEncadeada<E extends Comparable<E>> implements ArvoreBinB
 
     //  Retorna uma coleção navegável de nodos da Árvore.
     public E substituir(Posicao<E> posicao, E elemento) throws PosicaoInvalidaException {
-        return null;
+        if (posicao == null || elemento == null) {
+            throw new PosicaoInvalidaException("Posicao Inválida.");
+        }
+
+        if (posicao != root) {
+            if (posicao.getFather().getLeftChild() != null && posicao == posicao.getFather().getLeftChild()) {
+                if (elemento.compareTo(posicao.getFather().getData()) >= 0) {
+                    throw new PosicaoInvalidaException("Posicao Inválida.");
+                }
+            }
+            if (posicao.getFather().getRightChild() != null && posicao == posicao.getFather().getRightChild()) {
+                if (elemento.compareTo(posicao.getFather().getData()) < 0) {
+                    throw new PosicaoInvalidaException("Posicao Inválida.");
+                }
+            }
+        } else {
+            if (posicao.getRightChild() != null && elemento.compareTo(posicao.getRightChild().getData()) >= 0) {
+                throw new PosicaoInvalidaException("Posicao Inválida.");
+            }
+            if (posicao.getLeftChild() != null && elemento.compareTo(posicao.getLeftChild().getData()) < 0) {
+                throw new PosicaoInvalidaException("Posicao Inválida.");
+            }
+        }
+
+        E temp = posicao.getData();
+        posicao.setData(elemento);
+        return temp;
     }
+
 
     //   Substitui o elemento armazenado na posição especificada.
     public Posicao<E> getRaiz() throws ArvoreVaziaException {
@@ -44,9 +71,9 @@ public class ArvoreBuscaEncadeada<E extends Comparable<E>> implements ArvoreBinB
 
     //  Retorna a raiz da Árvore.
     public Posicao<E> pai(Posicao<E> posicao) throws PosicaoInvalidaException, LimiteVioladoException {
-        if(posicao == null){
+        if (posicao == null) {
             throw new PosicaoInvalidaException("Posição Inválida.");
-        }else if(posicao == root){
+        } else if (posicao == root) {
             throw new LimiteVioladoException("Limite Violado.");
         }
 
@@ -60,13 +87,21 @@ public class ArvoreBuscaEncadeada<E extends Comparable<E>> implements ArvoreBinB
     //   Retorna uma coleção navegável contendo os filhos de um determinado nodo.
 
     public boolean ehInterno(Posicao<E> posicao) throws PosicaoInvalidaException {
-        return false;
+        if (posicao.getRightChild() != null || posicao.getLeftChild() != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //   Verifica se a posição do elemento representa um nó é interno. Se for um nó
     //   interno retorna true, caso contrário retorna false.
     public boolean ehFolha(Posicao<E> posicao) throws PosicaoInvalidaException {
-        return false;
+        if (posicao.getRightChild() == null && posicao.getLeftChild() == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //   Verifica se a posição do elemento representa um nó folha. Se for um nó folha
@@ -137,29 +172,22 @@ public class ArvoreBuscaEncadeada<E extends Comparable<E>> implements ArvoreBinB
 
     //  Verifica se a posição é filho esquerdo do pai.
     public boolean ehFilhoDir(PosicaoArvoreBin<E> pai, PosicaoArvoreBin<E> filho) throws PosicaoInvalidaException {
-        if (pai == null || filho == null || pai.getRightChild() == null) {
-            throw new PosicaoInvalidaException("Posicao Inválida.");
+        if (pai == null || filho == null || pai.getRightChild() != filho) {
+            throw new PosicaoInvalidaException("Posicao Inválida: pai não tem filho direito ou as posições informadas são inválidas.");
         } else {
-            return pai.getRightChild().equals(filho);
+            return true;
         }
     }
 
+
     //Verifica se a posição é filho direito do pai.
-    public boolean inserir(PosicaoArvoreBin<E> posicao) throws ArvoreNaoVaziaException, PosicaoInvalidaException, ArvoreVaziaException {
+    public boolean inserir(PosicaoArvoreBin<E> posicao) throws PosicaoInvalidaException, ArvoreVaziaException {
         if (root == null) {
             root = posicao;
         } else {
             PosicaoArvoreBin<E> aux = root;
             do {
-                if (posicao.getData().compareTo(aux.getData()) > 0) {
-                    if (aux.getRightChild() != null) {
-                        aux = aux.getRightChild();
-                    } else {
-                        posicao.setFather(aux);
-                        aux.setRightChild(posicao);
-                        return true;
-                    }
-                } else {
+                if (posicao.getData().compareTo(aux.getData()) < 0) {
                     if (aux.getLeftChild() != null) {
                         aux = aux.getLeftChild();
                     } else {
@@ -167,43 +195,257 @@ public class ArvoreBuscaEncadeada<E extends Comparable<E>> implements ArvoreBinB
                         aux.setLeftChild(posicao);
                         return true;
                     }
+                } else {
+                    if (aux.getRightChild() != null) {
+                        aux = aux.getRightChild();
+                    } else {
+                        posicao.setFather(aux);
+                        aux.setRightChild(posicao);
+                        return true;
+                    }
                 }
             } while (true);
         }
         return false;
     }
+
     //  Insere uma nova posição na árvore binária de busca, garantindo a sua propriedade.
 
+    private PosicaoArvoreBin<E> sucessor(PosicaoArvoreBin<E> posicao) {
+        PosicaoArvoreBin<E> sucessor = posicao.getRightChild();
+        while (sucessor.getLeftChild() != null) {
+            sucessor = sucessor.getLeftChild();
+        }
+        return sucessor;
+    }
+
+
+    //  Remove uma posição da árvore binária de busca, garantindo a sua propriedade.
+    protected PosicaoArvoreBin<E> maior(PosicaoArvoreBin<E> posicao) throws PosicaoInvalidaException {
+        if (posicao == null || posicao.getLeftChild() == null) {
+            throw new PosicaoInvalidaException("Posicao Inválida");
+        }
+
+        PosicaoArvoreBin<E> aux = posicao.getLeftChild();
+        PosicaoArvoreBin<E> maior = aux;
+
+        while (aux.getRightChild() != null) {
+            aux = aux.getRightChild();
+            if (aux.getData().compareTo(maior.getData()) > 0) {
+                maior = aux;
+            }
+        }
+
+        return maior;
+    }
+
+    // Busca o nó com a maior chave na subárvore direita de um determinado nó.
     @Override
     public boolean remover(PosicaoArvoreBin<E> posicao) throws PosicaoInvalidaException {
         return false;
     }
 
-    //  Remove uma posição da árvore binária de busca, garantindo a sua propriedade.
-    protected PosicaoArvoreBin<E> maior(PosicaoArvoreBin<E> posicao) {
-        return null;
+    private void removerComDoisFilhos(PosicaoArvoreBin<E> no) throws PosicaoInvalidaException {
+
     }
 
-    //  Busca o nó com a maior chave na subárvore esquerda de um determino nó.
-    private void removerComDoisFilhos(PosicaoArvoreBin<E> no) throws PosicaoInvalidaException {
-    }
 
     // Remove um nó que possui dois filhos.
     private void removerFilhoUnico(PosicaoArvoreBin<E> no) throws PosicaoInvalidaException {
+
     }
 
     //Remove um nó que possui um único filho.
     private void removerFolha(PosicaoArvoreBin<E> no) throws PosicaoInvalidaException {
-    }
 
+    }
     // Remove um nó que não possui filhos.
+
+    /*    PosicaoArvoreBin aux = busca(no);
+        if (aux.getFather().getLeftChild() != null) {
+        if (aux.getFather().getLeftChild().equals(no)) {
+            aux.getFather().setLeftChild(null);
+        }else{
+            aux.getFather().setRightChild(null);
+        }
+    }*/
+
     public PosicaoArvoreBin<E> busca(Posicao<E> posicao) {
-        return new PosicaoArvoreBin<>();
+        if (root == null) {
+            return null;
+        }
+
+        PosicaoArvoreBin<E> aux = root;
+
+        while (aux != null) {
+            if (posicao.getData().compareTo(aux.getData()) >= 0) {
+                if (aux.getRightChild() != null) {
+                    aux = aux.getRightChild();
+                } else {
+                    return aux;
+                }
+            } else {
+                if (aux.getLeftChild() != null) {
+                    aux = aux.getLeftChild();
+                } else {
+                    return aux;
+                }
+            }
+        }
+
+        return null;
     }
 
     // Busca um determinado nó na árvore.
     public boolean existe(Posicao<E> posicao) {
+        if (root == null) {
+            return false;
+        }
+
+        PosicaoArvoreBin<E> aux = root;
+
+        while (aux != null) {
+            if (posicao.getData().compareTo(aux.getData()) >= 0) {
+                if (aux.getRightChild() != null) {
+                    aux = aux.getRightChild();
+                } else {
+                    return true;
+                }
+            } else {
+                if (aux.getLeftChild() != null) {
+                    aux = aux.getLeftChild();
+                } else {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
     // Verifica se um determinado nó existe na árvore.
+
+    //novos
+    public void listarArvore(int n) {
+        switch (n) {
+            case 1:
+                listarPreOrdem(root);
+                break;
+            case 2:
+                listarPosOrdem(root);
+                break;
+            case 3:
+                listarSimetrico(root);
+                break;
+            case 4:
+                System.out.print("Até qual nível? ");
+                listarPercursoEmNiveis(root, new Scanner(System.in).nextInt());
+                break;
+            case 5:
+                listaNosInternos(root);
+                break;
+            case 6:
+                listarFolhas(root);
+                break;
+            default:
+                System.out.println("Inválido.");
+        }
+    }
+
+    public void listaNosInternos(PosicaoArvoreBin<E> no) {
+        if (no != null) {
+            // Verifica se o nó atual tem filhos
+            if (no.getLeftChild() != null || no.getRightChild() != null) {
+                System.out.print(no.getData() + " ");
+            }
+            listaNosInternos(no.getLeftChild());
+            listaNosInternos(no.getRightChild());
+        }
+    }
+
+    private void listarFolhas(PosicaoArvoreBin<E> no) {
+        if (no != null) {
+            if (no.getLeftChild() == null && no.getRightChild() == null) {
+                System.out.print(no.getData() + " ");
+            }
+            listarFolhas(no.getLeftChild());
+            listarFolhas(no.getRightChild());
+        }
+    }
+
+    private void listarPreOrdem(PosicaoArvoreBin<E> no) {
+        if (no != null) {
+            System.out.print(no.getData() + " ");
+            listarPreOrdem(no.getLeftChild());
+            listarPreOrdem(no.getRightChild());
+        }
+    }
+
+    private void listarPosOrdem(PosicaoArvoreBin<E> no) {
+        if (no != null) {
+            listarPosOrdem(no.getLeftChild());
+            listarPosOrdem(no.getRightChild());
+            System.out.print(no.getData() + " ");
+        }
+    }
+
+    private void listarSimetrico(PosicaoArvoreBin<E> no) {
+        if (no != null) {
+            listarSimetrico(no.getLeftChild());
+            System.out.print(no.getData() + " ");
+            listarSimetrico(no.getRightChild());
+        }
+    }
+
+
+    public void listarPercursoEmNiveis(PosicaoArvoreBin<E> no, int nivel) {
+        int aux = nivel;
+
+        if (root.getData() == null) {
+            return;
+        }
+
+        if (no != null) {
+            System.out.print(no.getData() + " ");
+
+            if (nivel > 1) {
+                listarPercursoEmNiveis(no.getLeftChild(), nivel - 1);
+            }
+
+            if (aux > 1) {
+                listarPercursoEmNiveis(no.getRightChild(), aux - 1);
+            }
+        }
+    }
+
+    public int retornarAlturaArvore() {
+        int altura1 = 0, altura2 = 0;
+
+        if (root.getData() != null) {
+            PosicaoArvoreBin<E> aux = root;
+            altura1 = 1;
+            altura2 = 1;
+
+            do {
+                if (aux.getLeftChild() != null) {
+                    aux = aux.getLeftChild();
+                    altura1++;
+                } else {
+                    aux = null;
+                }
+            } while (aux != null);
+
+            aux = root;
+            do {
+                if (aux.getRightChild() != null) {
+                    aux = aux.getRightChild();
+                    altura2++;
+                } else {
+                    aux = null;
+                }
+            } while (aux != null);
+        }
+
+        return Math.max(altura1, altura2) - 1;
+    }
+
 }
